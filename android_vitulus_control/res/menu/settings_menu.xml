@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+  <item
+      android:id="@+id/virtual_joystick_properties"
+      android:title="Virtual joystick">
+    <menu>
+      <group
+          android:checkableBehavior="all">
+        <item
+            android:id="@+id/virtual_joystick_snap"
+            android:title="Auto snapping" />
+      </group>
+    </menu>
+  </item>
+  <item
+      android:id="@+id/motor_power_properties"
+      android:title="Motor power">
+    <menu>
+      <group
+          android:checkableBehavior="all">
+        <item
+            android:id="@+id/motor_power_enabled"
+            android:title="Enable motors" />
+      </group>
+    </menu>
+  </item>
+  <item
+      android:id="@+id/show_camera"
+      android:title="Show camera"
+      android:checked="true"/>
+  <item
+      android:id="@+id/show_map"
+      android:title="Show map"
+      android:checked="false"/>
+</menu>
