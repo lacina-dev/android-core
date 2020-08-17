@@ -30,10 +30,12 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.CompoundButton;
+import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -53,7 +55,6 @@ import org.ros.android.view.visualization.layer.LaserScanLayer;
 import org.ros.android.view.visualization.layer.Layer;
 import org.ros.android.view.visualization.layer.OccupancyGridLayer;
 import org.ros.android.view.visualization.layer.PathLayer;
-import org.ros.android.view.visualization.layer.PointCloud2DLayer;
 import org.ros.android.view.visualization.layer.PosePublisherLayer;
 import org.ros.android.view.visualization.layer.PoseSubscriberLayer;
 import org.ros.android.view.visualization.layer.RobotLayer;
@@ -75,6 +76,11 @@ import java.util.concurrent.TimeUnit;
  */
 public class MainActivity extends RosActivity{
 
+
+  android.widget.EditText mapStringLoadTxtView;
+  private RosTextView<std_msgs.String> mapListRosTxtView;
+  private RosTextView<std_msgs.String> mapStatusRosTxtView;
+
   private static final java.lang.String MAP_FRAME = "map";
   private static final java.lang.String ROBOT_FRAME = "t265_pose_frame";
 
@@ -86,11 +92,18 @@ public class MainActivity extends RosActivity{
   private RosTextView<std_msgs.String> rosTextViewtxtupsinfo;
   private RosIconColorView<std_msgs.String> fontWiewiconcolorups;
   private RosIconColorView<std_msgs.String> fontWiewiconcolorbat;
+  private android.widget.EditText mapStringSaveTxtView;
+
 
   private Talker talker;
   private TalkerMotor talker_motor;
   private TalkerGoalCancel talker_goal_cancel;
   private TalkerCmdVel talker_cmd_vel;
+  private TalkerMapSave talker_save_map;
+  private TalkerMapLoad talker_load_map;
+  private TalkerMapNew talker_new_map;
+  private TalkerMapEdit talker_edit_map;
+
 
   private CameraControlLayer cameraControlLayer;
   private final SystemCommands systemCommands;
@@ -100,7 +113,14 @@ public class MainActivity extends RosActivity{
   private ToggleButton btnMenu;
   private ToggleButton btnLidar;
   private ToggleButton btnFollow;
+  private ToggleButton btnNavi;
+  private ToggleButton btnMap;
+  private ToggleButton btnSpeed;
+  private Button btnLoadMap;
+  private Button btnEditMap;
+  private Button btnSaveMap;
   private ToggleButton btnUps;
+  private Button btnNewMap;
 
   private SrvsClientMotorStop srvsClientMotorStop;
   private SrvsClientMotorStart srvsClientMotorStart;
@@ -269,6 +289,7 @@ public class MainActivity extends RosActivity{
 
     final ImageView menuBar = (ImageView) findViewById(R.id.menuBar);
 
+
     btnLidar = (ToggleButton) findViewById(R.id.btnLidar);
     btnLidar.setChecked(false);
     btnLidar.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -343,6 +364,7 @@ public class MainActivity extends RosActivity{
       }
     });
 
+
     btnJoy = (ToggleButton) findViewById(R.id.btnJoy);
     btnJoy.setChecked(true);
     btnJoy.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -355,6 +377,7 @@ public class MainActivity extends RosActivity{
       }
     });
 
+
     btnUps = (ToggleButton) findViewById(R.id.btnUps);
     btnUps.setChecked(false);
     btnUps.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -366,6 +389,143 @@ public class MainActivity extends RosActivity{
         }
       }
     });
+
+
+    btnSpeed = (ToggleButton) findViewById(R.id.btnSpeed);
+    btnSpeed.setChecked(false);
+
+
+    mapStringLoadTxtView = (EditText) findViewById(R.id.mapStringLoadTxtView);
+
+    mapStringSaveTxtView = (EditText) findViewById(R.id.mapStringSaveTxtView);
+
+
+    mapStatusRosTxtView = findViewById(R.id.mapStatusRosTxtView);
+    mapStatusRosTxtView.setTopicName("navi_manager/status");
+    mapStatusRosTxtView.setMessageType(String._TYPE);
+    mapStatusRosTxtView.setMessageToStringCallable(new MessageCallable<java.lang.String, String>() {
+      @Override
+      public java.lang.String call(String message) {
+        return message.getData();
+      }
+    });
+
+
+    mapListRosTxtView = findViewById(R.id.mapListRosTxtView);
+    mapListRosTxtView.setTopicName("navi_manager/map_list");
+    mapListRosTxtView.setMessageType(String._TYPE);
+    mapListRosTxtView.setMessageToStringCallable(new MessageCallable<java.lang.String, String>() {
+      @Override
+      public java.lang.String call(String message) {
+        java.lang.String msgstr = message.getData();
+        java.lang.String frmtstr = msgstr.replace("---", "\n");
+        Log.d("mapdebug", "frmtstr: " + frmtstr);
+        //mapListTxtView.setText(frmtstr);
+        return frmtstr;
+      }
+    });
+
+
+    btnLoadMap = (Button) findViewById(R.id.btnLoadMap);
+    btnLoadMap.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        java.lang.String mapString = mapStringLoadTxtView.getText().toString();
+        talker_load_map.publish(mapString);
+      }
+    });
+
+
+    btnEditMap = (Button) findViewById(R.id.btnEditMap);
+    btnEditMap.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        talker_edit_map.publish("EDIT");
+      }
+    });
+
+
+    btnSaveMap = (Button) findViewById(R.id.btnSaveMap);
+    btnSaveMap.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        java.lang.String mapString = mapStringSaveTxtView.getText().toString();
+        talker_save_map.publish(mapString);
+      }
+    });
+
+
+    btnNewMap = (Button) findViewById(R.id.btnNewMap);
+    btnNewMap.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        talker_new_map.publish("NEW");
+      }
+    });
+
+
+
+
+
+
+    btnNavi = (ToggleButton) findViewById(R.id.btnNavi);
+    btnNavi.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          btnSpeed.setVisibility(View.INVISIBLE);
+        } else {
+          btnSpeed.setVisibility(View.VISIBLE);
+        }
+      }
+    });
+    btnNavi.setChecked(true);
+
+
+
+    btnMap = (ToggleButton) findViewById(R.id.btnMap);
+    btnMap.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        ImageView mapPanel;
+        mapPanel = (ImageView) findViewById(R.id.mapPanel);
+        TextView labelSave;
+        labelSave = (TextView) findViewById(R.id.labelSave);
+        TextView labeLoad;
+        labeLoad = (TextView) findViewById(R.id.labelLoad);
+
+        if (isChecked) {
+          btnLoadMap.setVisibility(View.INVISIBLE);
+          btnEditMap.setVisibility(View.INVISIBLE);
+          btnSaveMap.setVisibility(View.INVISIBLE);
+          btnNewMap.setVisibility(View.INVISIBLE);
+          mapPanel.setVisibility(View.INVISIBLE);
+          mapStringLoadTxtView.setVisibility(View.INVISIBLE);
+          mapStringSaveTxtView.setVisibility(View.INVISIBLE);
+          mapListRosTxtView.setVisibility(View.INVISIBLE);
+          mapStatusRosTxtView.setVisibility(View.INVISIBLE);
+//          virtualJoystickView.setVisibility(View.INVISIBLE);
+          labelSave.setVisibility(View.INVISIBLE);
+          labeLoad.setVisibility(View.INVISIBLE);
+          btnJoy.setChecked(true);
+        } else {
+          btnLoadMap.setVisibility(View.VISIBLE);
+          btnEditMap.setVisibility(View.VISIBLE);
+          btnSaveMap.setVisibility(View.VISIBLE);
+          btnNewMap.setVisibility(View.VISIBLE);
+          mapPanel.setVisibility(View.VISIBLE);
+          mapListRosTxtView.setVisibility(View.VISIBLE);
+          mapStringLoadTxtView.setVisibility(View.VISIBLE);
+          mapStringSaveTxtView.setVisibility(View.VISIBLE);
+          mapStatusRosTxtView.setText("");
+          mapStatusRosTxtView.setVisibility(View.VISIBLE);
+//          virtualJoystickView.setVisibility(View.VISIBLE);
+          labelSave.setVisibility(View.VISIBLE);
+          labeLoad.setVisibility(View.VISIBLE);
+          btnJoy.setChecked(false);
+        }
+      }
+    });
+    btnMap.setChecked(true);
+
 
     btnMenu = (ToggleButton) findViewById(R.id.btnMenu);
     btnMenu.setChecked(true);
@@ -420,6 +580,11 @@ public class MainActivity extends RosActivity{
     talker_motor = new TalkerMotor();
     talker_goal_cancel = new TalkerGoalCancel();
     talker_cmd_vel = new TalkerCmdVel();
+    talker_save_map = new TalkerMapSave();
+    talker_load_map = new TalkerMapLoad();
+    talker_new_map = new TalkerMapNew();
+    talker_edit_map = new TalkerMapEdit();
+
     srvsClientMotorStop = new SrvsClientMotorStop();
     srvsClientMotorStart = new SrvsClientMotorStart();
 
@@ -453,6 +618,12 @@ public class MainActivity extends RosActivity{
     nodeMainExecutor.execute(srvsClientMotorStop, nodeConfiguration.setNodeName("android/srvs_cli_motor_stop"));
     nodeMainExecutor.execute(srvsClientMotorStart, nodeConfiguration.setNodeName("android/srvs_cli_motor_start"));
     nodeMainExecutor.execute(rosTextViewtxtupsinfo, nodeConfiguration.setNodeName("android/upsinfo"));
+    nodeMainExecutor.execute(mapListRosTxtView, nodeConfiguration.setNodeName("android/maplist"));
+    nodeMainExecutor.execute(talker_save_map, nodeConfiguration.setNodeName("android/mapsave"));
+    nodeMainExecutor.execute(talker_load_map, nodeConfiguration.setNodeName("android/mapload"));
+    nodeMainExecutor.execute(talker_new_map, nodeConfiguration.setNodeName("android/mapnew"));
+    nodeMainExecutor.execute(talker_edit_map, nodeConfiguration.setNodeName("android/editmap"));
+    nodeMainExecutor.execute(mapStatusRosTxtView, nodeConfiguration.setNodeName("android/mapstatus"));
 
   }
 }

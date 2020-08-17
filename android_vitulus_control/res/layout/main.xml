@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:layout_alignWithParentIfMissing="true"
     android:layout_centerInParent="true"
-    android:background="#000000"
+    android:background="@color/on"
     android:fadingEdge="horizontal|vertical"
     android:orientation="horizontal">
 
@@ -138,7 +138,7 @@
 
     <ToggleButton
         android:id="@+id/btnMotors"
-        android:layout_width="90dp"
+        android:layout_width="70dp"
         android:layout_height="24dp"
 
         android:layout_alignBottom="@id/menuBar"
@@ -149,8 +149,8 @@
         android:checked="true"
         android:text="ToggleButton"
         android:textColor="@color/onblue"
-        android:textOff="Motors off"
-        android:textOn="Motors on"
+        android:textOff="Motors"
+        android:textOn="Motors"
         android:textSize="12sp" />
 
     <ToggleButton
@@ -171,7 +171,7 @@
 
     <ToggleButton
         android:id="@+id/btnLidar"
-        android:layout_width="76dp"
+        android:layout_width="70dp"
         android:layout_height="24dp"
 
         android:layout_alignBottom="@id/btnMotors"
@@ -181,8 +181,8 @@
         android:background="@drawable/toggle_btn_background"
         android:text="ToggleButton"
         android:textColor="@color/onblue"
-        android:textOff="Lidar off"
-        android:textOn="Lidar on"
+        android:textOff="Lidar"
+        android:textOn="Lidar"
         android:textSize="12sp" />
 
     <ToggleButton
@@ -219,8 +219,56 @@
         android:textSize="12sp" />
 
     <ToggleButton
+        android:id="@+id/btnNavi"
+        android:layout_width="70dp"
+        android:layout_height="24dp"
+
+        android:layout_alignBottom="@id/btnMotors"
+        android:layout_marginLeft="1dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@id/btnFixedFollow"
+        android:background="@drawable/toggle_btn_background"
+        android:text="ToggleButton"
+        android:textColor="@color/onblue"
+        android:textOff="NAVI"
+        android:textOn="NAVI"
+        android:textSize="12sp" />
+
+    <ToggleButton
+        android:id="@+id/btnSpeed"
+        android:layout_width="70dp"
+        android:layout_height="24dp"
+
+        android:layout_alignBottom="@id/btnMotors"
+        android:layout_marginLeft="1dp"
+        android:layout_marginBottom="25dp"
+        android:layout_toEndOf="@id/btnFixedFollow"
+        android:background="@drawable/toggle_btn_background"
+        android:text="ToggleButton"
+        android:textColor="@color/onblue"
+        android:textOff="SLOW"
+        android:textOn="FAST"
+        android:textSize="12sp" />
+
+    <ToggleButton
+        android:id="@+id/btnMap"
+        android:layout_width="70dp"
+        android:layout_height="24dp"
+
+        android:layout_alignBottom="@id/btnMotors"
+        android:layout_marginLeft="1dp"
+        android:layout_marginBottom="0dp"
+        android:layout_toEndOf="@id/btnNavi"
+        android:background="@drawable/toggle_btn_background"
+        android:text="ToggleButton"
+        android:textColor="@color/onblue"
+        android:textOff="MAP"
+        android:textOn="MAP"
+        android:textSize="12sp" />
+
+    <ToggleButton
         android:id="@+id/btnNaviCam"
-        android:layout_width="80dp"
+        android:layout_width="90dp"
         android:layout_height="24dp"
 
         android:layout_alignParentRight="true"
@@ -231,8 +279,8 @@
         android:checked="true"
         android:text="ToggleButton"
         android:textColor="#FFFFFF"
-        android:textOff="Camera"
-        android:textOn="Navi map"
+        android:textOff="Cam view"
+        android:textOn="Navi view"
         android:textSize="12sp" />
 
     <ToggleButton
@@ -268,6 +316,171 @@
         android:text="UPS info view"
         android:textColor="@android:color/primary_text_dark_nodisable"
         android:visibility="invisible" />
+
+    <ImageView
+        android:id="@+id/mapPanel"
+        android:layout_width="match_parent"
+        android:layout_height="265dp"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="0dp"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="24dp"
+        android:background="#E6000000"
+        android:fontFamily="monospace"
+        android:paddingLeft="5dp"
+        android:paddingTop="6dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="6dp"
+        android:text="UPS info view"
+        android:textColor="@android:color/primary_text_dark_nodisable"
+        android:visibility="visible" />
+
+    <org.ros.android.view.RosTextView
+        android:id="@+id/mapListRosTxtView"
+        android:layout_width="308dp"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/btnMotors"
+        android:layout_below="@+id/imageView"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="-2dp"
+        android:textColor="#FFFFFF"
+        android:textIsSelectable="true"
+        android:visibility="visible" />
+
+    <Button
+        android:id="@+id/btnSaveMap"
+        android:layout_width="170dp"
+        android:layout_height="24dp"
+
+        android:layout_alignTop="@id/mapStringSaveTxtView"
+        android:layout_alignEnd="@id/mapStringSaveTxtView"
+        android:layout_marginTop="40dp"
+        android:layout_marginRight="5dp"
+        android:background="@android:color/secondary_text_dark"
+        android:checked="true"
+        android:text=" SAVE CURRENT MAP AS"
+        android:textColor="@color/onblue"
+        android:textOff=" SAVE CURRENT MAP AS"
+        android:textOn=" SAVE CURRENT MAP AS"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/btnLoadMap"
+        android:layout_width="70dp"
+        android:layout_height="24dp"
+
+        android:layout_alignTop="@id/mapStringLoadTxtView"
+        android:layout_alignEnd="@+id/mapStringLoadTxtView"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="40dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="0dp"
+        android:background="@android:color/secondary_text_dark"
+        android:checked="true"
+        android:text="LOAD"
+        android:textColor="@color/onblue"
+        android:textOff="LOAD"
+        android:textOn="LOAD"
+        android:textSize="12sp" />
+
+    <EditText
+        android:id="@+id/mapStringLoadTxtView"
+        android:layout_width="306dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/imageView"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="93dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="24dp"
+        android:layout_toEndOf="@+id/mapListRosTxtView"
+        android:background="#FFFFFF"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/mapStringSaveTxtView"
+        android:layout_width="306dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btnLoadMap"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="93dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
+        android:layout_toEndOf="@+id/mapListRosTxtView"
+        android:background="#FFFFFF"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/labelLoad"
+        android:layout_width="287dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/mapStringLoadTxtView"
+        android:layout_alignBottom="@id/mapStringLoadTxtView"
+        android:layout_marginLeft="3dp"
+        android:layout_marginBottom="27dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Map name to load from llist on the left."
+        android:textColor="#FFFFFF"
+        android:textSize="10sp" />
+
+    <TextView
+        android:id="@+id/labelSave"
+        android:layout_width="287dp"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@id/mapStringSaveTxtView"
+        android:layout_alignBottom="@id/mapStringSaveTxtView"
+        android:layout_marginLeft="3dp"
+        android:layout_marginBottom="27dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        android:text="Map name to save (overwrite) current map."
+        android:textColor="#FFFFFF"
+        android:textSize="10sp" />
+
+    <Button
+        android:id="@+id/btnNewMap"
+        android:layout_width="150dp"
+        android:layout_height="24dp"
+
+        android:layout_below="@id/btnEditMap"
+        android:layout_alignRight="@id/btnEditMap"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="0dp"
+        android:background="@android:color/secondary_text_dark"
+        android:checked="true"
+        android:text="CREATE NEW MAP"
+        android:textColor="@color/onblue"
+        android:textOff="CREATE NEW MAP"
+        android:textOn="CREATE NEW MAP"
+        android:textSize="12sp" />
+
+    <Button
+        android:id="@+id/btnEditMap"
+        android:layout_width="150dp"
+        android:layout_height="24dp"
+
+        android:layout_below="@id/btnSaveMap"
+        android:layout_alignEnd="@id/mapStringSaveTxtView"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="0dp"
+        android:background="@android:color/secondary_text_dark"
+        android:checked="false"
+        android:text="EDIT CURRENT MAP"
+        android:textColor="@color/onblue"
+        android:textOff="EDIT CURRENT MAP"
+        android:textOn="EDIT CURRENT MAP"
+        android:textSize="12sp" />
+
+    <org.ros.android.view.RosTextView
+        android:id="@+id/mapStatusRosTxtView"
+        android:layout_width="327dp"
+        android:layout_height="40dp"
+        android:layout_below="@id/btnNewMap"
+        android:layout_alignRight="@id/btnEditMap"
+        android:layout_marginTop="5dp"
+        android:layout_marginRight="-24dp"
+        android:textColor="#FDD835" />
 
 
 </RelativeLayout>
