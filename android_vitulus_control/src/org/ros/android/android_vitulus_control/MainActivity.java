@@ -103,6 +103,8 @@ public class MainActivity extends RosActivity{
   private TalkerMapLoad talker_load_map;
   private TalkerMapNew talker_new_map;
   private TalkerMapEdit talker_edit_map;
+  private TalkerSetSpeed talker_set_speed;
+  private TalkerMoverMotor talker_mover_motor;
 
 
   private CameraControlLayer cameraControlLayer;
@@ -116,6 +118,7 @@ public class MainActivity extends RosActivity{
   private ToggleButton btnNavi;
   private ToggleButton btnMap;
   private ToggleButton btnSpeed;
+  private ToggleButton btnMover;
   private Button btnLoadMap;
   private Button btnEditMap;
   private Button btnSaveMap;
@@ -364,6 +367,20 @@ public class MainActivity extends RosActivity{
       }
     });
 
+    btnMover = (ToggleButton) findViewById(R.id.btnMover);
+    btnMover.setChecked(false);
+    btnMover.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          talker_mover_motor.publish(true);
+          Toast.makeText(getApplicationContext(), "Mover motor switched on!", Toast.LENGTH_SHORT).show();
+        } else {
+          talker_mover_motor.publish(false);
+          Toast.makeText(getApplicationContext(), "Mover motor switched off!", Toast.LENGTH_SHORT).show();
+        }
+      }
+    });
+
 
     btnJoy = (ToggleButton) findViewById(R.id.btnJoy);
     btnJoy.setChecked(true);
@@ -392,7 +409,19 @@ public class MainActivity extends RosActivity{
 
 
     btnSpeed = (ToggleButton) findViewById(R.id.btnSpeed);
-    btnSpeed.setChecked(false);
+    btnSpeed.setChecked(true);
+    btnSpeed.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        if (isChecked) {
+          talker_set_speed.publish("FAST");
+          Toast.makeText(getApplicationContext(), "Speed set FAST.", Toast.LENGTH_SHORT).show();
+        } else {
+          talker_set_speed.publish("SLOW");
+          Toast.makeText(getApplicationContext(), "Speed set SLOW", Toast.LENGTH_SHORT).show();
+        }
+      }
+    });
+
 
 
     mapStringLoadTxtView = (EditText) findViewById(R.id.mapStringLoadTxtView);
@@ -564,9 +593,9 @@ public class MainActivity extends RosActivity{
         }catch (Exception e){
           e.printStackTrace();
         }
+        talker_mover_motor.publish(false);
+        btnMover.setChecked(false);
         talker_motor.publish(false);
-
-//        Toast.makeText(getApplicationContext(), "Goal canceled", Toast.LENGTH_SHORT).show();
         btnMotors.setChecked(false);
         Toast.makeText(getApplicationContext(), "Stopped!", Toast.LENGTH_SHORT).show();
       }
@@ -584,6 +613,8 @@ public class MainActivity extends RosActivity{
     talker_load_map = new TalkerMapLoad();
     talker_new_map = new TalkerMapNew();
     talker_edit_map = new TalkerMapEdit();
+    talker_set_speed = new TalkerSetSpeed();
+    talker_mover_motor = new TalkerMoverMotor();
 
     srvsClientMotorStop = new SrvsClientMotorStop();
     srvsClientMotorStart = new SrvsClientMotorStart();
@@ -624,6 +655,8 @@ public class MainActivity extends RosActivity{
     nodeMainExecutor.execute(talker_new_map, nodeConfiguration.setNodeName("android/mapnew"));
     nodeMainExecutor.execute(talker_edit_map, nodeConfiguration.setNodeName("android/editmap"));
     nodeMainExecutor.execute(mapStatusRosTxtView, nodeConfiguration.setNodeName("android/mapstatus"));
+    nodeMainExecutor.execute(talker_set_speed, nodeConfiguration.setNodeName("android/talker_set_speed"));
+    nodeMainExecutor.execute(talker_mover_motor, nodeConfiguration.setNodeName("android/mover_motor"));
 
   }
 }
