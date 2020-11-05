@@ -61,19 +61,14 @@ public class RosIconColorView<T>  extends info.androidhive.fontawesome.FontTextV
                     post(new Runnable() {
                         @Override
                         public void run() {
-//                            setText(callable.call(message));
-                            //setTextColor(Color.parseColor(callable.call(message)));
                             msg = callable.call(message);
-                            //setTextColor();
                         }
                     });
                 } else {
                     post(new Runnable() {
                         @Override
                         public void run() {
-                            //setTextColor(Color.parseColor(message.toString()));
                             msg = message.toString();
-                            //setText(message.toString());
                         }
                     });
                 }
