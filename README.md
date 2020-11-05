@@ -4,11 +4,12 @@ Source of android application to control VITULUS robot. The app is based on [and
 
 For details visit [my blog](https://lacina.dev/blog/how-install-android-studio-and-android-core-based-vitulus-app-ubuntu-2004/)
 
-![](https://gitlab.lacina.dev/vitulus/android_core/-/raw/master/img/android_vitulus_control_cam.png)
 
 camera view
+![](https://gitlab.lacina.dev/vitulus/android_core/-/raw/master/img/android_vitulus_control_cam.png)
 
-![](https://gitlab.lacina.dev/vitulus/android_core/-/raw/master/img/android_vitulus_control_map.png)
+
 
 map view
+![](https://gitlab.lacina.dev/vitulus/android_core/-/raw/master/img/android_vitulus_control_map.png)
 
