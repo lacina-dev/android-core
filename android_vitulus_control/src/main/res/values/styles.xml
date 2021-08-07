@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="SwitchTheme" parent="Theme.AppCompat.Light">
+
+    <!-- Base application theme. -->
+    <color name="custom_theme_color">#b0b0ff</color>
+
+
+    <style name="SwitchTheme" parent="Theme.AppCompat.DayNight">
         <item name="colorControlActivated">#42A5F5</item>
+        <item name="android:colorBackground">@color/custom_theme_color</item>
     </style>
+
+
+
 </resources>

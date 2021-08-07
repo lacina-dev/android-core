@@ -28,25 +28,25 @@ import org.ros.node.topic.Publisher;
  *
  * @author damonkohler@google.com (Damon Kohler)
  */
-public class TalkerMoverMotor extends AbstractNodeMain {
+public class TalkerMowerRpm extends AbstractNodeMain {
     Publisher<std_msgs.Int32> publisher;
 
     @Override
     public GraphName getDefaultNodeName() {
-        return GraphName.of("android/mover_motors");
+        return GraphName.of("android/mover_rpm");
     }
 
     // Note that you shouldn't call this before onStart is called;
     // check that publisher is not null before using it!
-    public void publish(Integer message) {
+    public void publish(Double message) {
         std_msgs.Int32 toPublish = publisher.newMessage();
-        toPublish.setData(message);
+        toPublish.setData(message.intValue());
         publisher.publish(toPublish);
     }
 
     @Override
     public void onStart(final ConnectedNode connectedNode) {
-        publisher = connectedNode.newPublisher("mower_set_motor", std_msgs.Int32._TYPE);
+        publisher = connectedNode.newPublisher("mower_set_rpm", std_msgs.Int32._TYPE);
 
 
     }

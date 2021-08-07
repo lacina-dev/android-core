@@ -35,11 +35,13 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.CompoundButton;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import sensor_msgs.CompressedImage;
+import std_msgs.Int32;
 import std_msgs.String;
 
 import org.ros.address.InetAddressFactory;
@@ -105,6 +107,8 @@ public class MainActivity extends RosActivity{
   private TalkerMapEdit talker_edit_map;
   private TalkerSetSpeed talker_set_speed;
   private TalkerMoverMotor talker_mover_motor;
+  private TalkerMowerRpm talker_mower_rpm;
+  private TalkerMowerCutHeight talker_mower_cut_height;
 
 
   private CameraControlLayer cameraControlLayer;
@@ -127,6 +131,15 @@ public class MainActivity extends RosActivity{
 
   private SrvsClientMotorStop srvsClientMotorStop;
   private SrvsClientMotorStart srvsClientMotorStart;
+
+  private Button btnMowerOn;
+  private Button btnMowerOff;
+  private RosTextView<std_msgs.Int32> rosTextViewCurrRpm;
+  private RosTextView<std_msgs.Int32> rosTextViewCutHeight;
+  private TextView textViewSetRpm;
+  private SeekBar seekBarRpm;
+  private TextView textViewSetCutHeight;
+  private SeekBar seekBarCutHeight;
 
 
   public MainActivity() {
@@ -367,20 +380,150 @@ public class MainActivity extends RosActivity{
       }
     });
 
-    btnMover = (ToggleButton) findViewById(R.id.btnMover);
-    btnMover.setChecked(false);
-    btnMover.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-        if (isChecked) {
-          talker_mover_motor.publish(true);
-          Toast.makeText(getApplicationContext(), "Mover motor switched on!", Toast.LENGTH_SHORT).show();
-        } else {
-          talker_mover_motor.publish(false);
-          Toast.makeText(getApplicationContext(), "Mover motor switched off!", Toast.LENGTH_SHORT).show();
-        }
+
+    ////////////////////////////  MOWER
+
+    btnMowerOn = (Button) findViewById(R.id.btnMowerOn);
+    btnMowerOn.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        talker_mover_motor.publish(1);
+        Toast.makeText(getApplicationContext(), "Mover motor switched on!", Toast.LENGTH_SHORT).show();
       }
     });
 
+    btnMowerOff = (Button) findViewById(R.id.btnMowerOff);
+    btnMowerOff.setOnClickListener(new Button.OnClickListener() {
+      @Override
+      public void onClick(View v) {
+        talker_mover_motor.publish(0);
+        Toast.makeText(getApplicationContext(), "Mover motor switched off!", Toast.LENGTH_SHORT).show();
+      }
+    });
+
+    // txtCurrRpm
+    rosTextViewCurrRpm = findViewById(R.id.rosTextViewCurrRpm);
+    rosTextViewCurrRpm.setTopicName("mower_rpm");
+    rosTextViewCurrRpm.setMessageType(Int32._TYPE);
+    rosTextViewCurrRpm.setMessageToStringCallable(new MessageCallable<java.lang.String, Int32>() {
+      @Override
+      public java.lang.String call(std_msgs.Int32 message) {
+        return java.lang.String.valueOf(message.getData());
+      }
+    });
+
+    // txtCurrCutHeight
+    rosTextViewCutHeight = findViewById(R.id.rosTextViewCutHeight);
+    rosTextViewCutHeight.setTopicName("mower_cut_height");
+    rosTextViewCutHeight.setMessageType(Int32._TYPE);
+    rosTextViewCutHeight.setMessageToStringCallable(new MessageCallable<java.lang.String, Int32>() {
+      @Override
+      public java.lang.String call(std_msgs.Int32 message) {
+        return java.lang.String.valueOf(message.getData());
+      }
+    });
+
+    //  set mower rpm
+    textViewSetRpm = findViewById(R.id.textViewSetRpm);
+    seekBarRpm = findViewById(R.id.seekBarRpm);
+    //                  max    min    step
+    seekBarRpm.setMax( (5000 - 500) / 50 );
+
+
+    seekBarRpm.setOnSeekBarChangeListener(
+            new SeekBar.OnSeekBarChangeListener()
+            {
+              @Override
+              public void onStopTrackingTouch(SeekBar seekBarRpm) {}
+
+              @Override
+              public void onStartTrackingTouch(SeekBar seekBarRpm) {}
+
+              @Override
+              public void onProgressChanged(SeekBar seekBarRpm, int progress,
+                                            boolean fromUser)
+              {
+
+                double value = 500 + (progress * 50);
+                textViewSetRpm.setText(java.lang.String.valueOf(value));
+                talker_mower_rpm.publish(value);
+
+              }
+            }
+    );
+
+    //  set mower cut height
+    textViewSetCutHeight = findViewById(R.id.textViewSetCutHeight);
+    seekBarCutHeight = findViewById(R.id.seekBarCutHeight);
+    //                  max    min    step
+    seekBarCutHeight.setMax( (60 - 20) / 5 );
+    seekBarCutHeight.setProgress(60);
+    textViewSetCutHeight.setText(java.lang.String.valueOf(60));
+
+
+    seekBarCutHeight.setOnSeekBarChangeListener(
+            new SeekBar.OnSeekBarChangeListener()
+            {
+              @Override
+              public void onStopTrackingTouch(SeekBar seekBarCutHeight) {}
+
+              @Override
+              public void onStartTrackingTouch(SeekBar seekBarCutHeight) {}
+
+              @Override
+              public void onProgressChanged(SeekBar seekBarCutHeight, int progress,
+                                            boolean fromUser)
+              {
+
+                double value = 20 + (progress * 5);
+                textViewSetCutHeight.setText(java.lang.String.valueOf(value));
+                talker_mower_cut_height.publish(value);
+
+              }
+            }
+    );
+
+    btnMover = (ToggleButton) findViewById(R.id.btnMover);
+    btnMover.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+        TextView currRpm;
+        currRpm = findViewById(R.id.currRpm);
+        TextView currCutHeight;
+        currCutHeight = findViewById(R.id.currCutHeight);
+        ImageView MowerPanel;
+        MowerPanel = findViewById(R.id.MowerPanel);
+
+        if (isChecked) {
+          seekBarCutHeight.setVisibility(View.VISIBLE);
+          textViewSetCutHeight.setVisibility(View.VISIBLE);
+          textViewSetRpm.setVisibility(View.VISIBLE);
+          seekBarRpm.setVisibility(View.VISIBLE);
+          rosTextViewCutHeight.setVisibility(View.VISIBLE);
+          rosTextViewCurrRpm.setVisibility(View.VISIBLE);
+          btnMowerOff.setVisibility(View.VISIBLE);
+          btnMowerOn.setVisibility(View.VISIBLE);
+          currRpm.setVisibility(View.VISIBLE);
+          currCutHeight.setVisibility(View.VISIBLE);
+          MowerPanel.setVisibility(View.VISIBLE);
+        } else {
+          seekBarCutHeight.setVisibility(View.INVISIBLE);
+          textViewSetCutHeight.setVisibility(View.INVISIBLE);
+          textViewSetRpm.setVisibility(View.INVISIBLE);
+          seekBarRpm.setVisibility(View.INVISIBLE);
+          rosTextViewCutHeight.setVisibility(View.INVISIBLE);
+          rosTextViewCurrRpm.setVisibility(View.INVISIBLE);
+          btnMowerOff.setVisibility(View.INVISIBLE);
+          btnMowerOn.setVisibility(View.INVISIBLE);
+          currRpm.setVisibility(View.INVISIBLE);
+          currCutHeight.setVisibility(View.INVISIBLE);
+          MowerPanel.setVisibility(View.INVISIBLE);
+        }
+      }
+    });
+    btnMover.setChecked(false);
+
+
+    //////////////////////////////////////////////   JOY
 
     btnJoy = (ToggleButton) findViewById(R.id.btnJoy);
     btnJoy.setChecked(true);
@@ -593,7 +736,7 @@ public class MainActivity extends RosActivity{
         }catch (Exception e){
           e.printStackTrace();
         }
-        talker_mover_motor.publish(false);
+        talker_mover_motor.publish(0);
         btnMover.setChecked(false);
         talker_motor.publish(false);
         btnMotors.setChecked(false);
@@ -615,6 +758,8 @@ public class MainActivity extends RosActivity{
     talker_edit_map = new TalkerMapEdit();
     talker_set_speed = new TalkerSetSpeed();
     talker_mover_motor = new TalkerMoverMotor();
+    talker_mower_rpm = new TalkerMowerRpm();
+    talker_mower_cut_height = new TalkerMowerCutHeight();
 
     srvsClientMotorStop = new SrvsClientMotorStop();
     srvsClientMotorStart = new SrvsClientMotorStart();
@@ -657,6 +802,9 @@ public class MainActivity extends RosActivity{
     nodeMainExecutor.execute(mapStatusRosTxtView, nodeConfiguration.setNodeName("android/mapstatus"));
     nodeMainExecutor.execute(talker_set_speed, nodeConfiguration.setNodeName("android/talker_set_speed"));
     nodeMainExecutor.execute(talker_mover_motor, nodeConfiguration.setNodeName("android/mover_motor"));
-
+    nodeMainExecutor.execute(rosTextViewCurrRpm, nodeConfiguration.setNodeName("android/txtCurrRpm"));
+    nodeMainExecutor.execute(rosTextViewCutHeight, nodeConfiguration.setNodeName("android/txtCurrCutHeight"));
+    nodeMainExecutor.execute(talker_mower_rpm, nodeConfiguration.setNodeName("android/mower_rpms"));
+    nodeMainExecutor.execute(talker_mower_cut_height, nodeConfiguration.setNodeName("android/mower_cutHeight"));
   }
 }
