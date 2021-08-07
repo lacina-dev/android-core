@@ -67,7 +67,7 @@ public class VirtualJoystickView extends RelativeLayout implements AnimationList
    * 180, or 270. For example, if the contactTheta is 85 degrees and
    * MAGNET_THETA is 10, the contactTheta will be changed to 90.
    */
-  private float magnetTheta = 10.0f;
+  private float magnetTheta = 20.0f;
   /**
    * ORIENTATION_TACK_FADE_RANGE The range in degrees around the current
    * orientation where the {@link #orientationWidget}s will be visible.
@@ -171,7 +171,7 @@ public class VirtualJoystickView extends RelativeLayout implements AnimationList
   /**
    * normalizingMultiplier Used to convert any distance from pixels to a
    * normalized value between 0 and 1. 0 is the center of widget and 1 is the
-   * normalized distance to the {@link #outerRing} from the center of the
+   * normalized distance to the {@link # outerRing} from the center of the
    * widget.
    */
   private float normalizingMultiplier;
@@ -697,12 +697,17 @@ public class VirtualJoystickView extends RelativeLayout implements AnimationList
     updateThumbDivet(thumbDivetX, thumbDivetY);
     updateMagnitudeText();
     // Publish the velocities.
+    double angularScale = 1.0;
+    if (turnInPlaceMode){
+      angularScale = 1.94;
+
+    }
     if (holonomic) {
       publishVelocity(normalizedMagnitude * Math.cos(contactTheta * Math.PI / 180.0),
           normalizedMagnitude * Math.sin(contactTheta * Math.PI / 180.0), 0);
     } else {
-      publishVelocity(normalizedMagnitude * Math.cos(contactTheta * Math.PI / 180.0), 0,
-          normalizedMagnitude * Math.sin(contactTheta * Math.PI / 180.0));
+      publishVelocity(normalizedMagnitude * Math.cos(contactTheta * Math.PI / 180.0) * 0.52, 0,
+          normalizedMagnitude * Math.sin(contactTheta * Math.PI / 180.0) * angularScale);
     }
 
     // Check if the turn-in-place mode needs to be activated/deactivated.

@@ -207,7 +207,7 @@ public class MainActivity extends RosActivity{
     visualizationView.getCamera().jumpToFrame(ROBOT_FRAME);
 
     image = findViewById(R.id.image);
-    image.setTopicName("camera/color/image_raw/compressed");
+    image.setTopicName("d435/color/image_raw/compressed");
     image.setMessageType(CompressedImage._TYPE);
     image.setMessageToBitmapCallable(new BitmapFromCompressedImage());
     LayoutParams lp = (LayoutParams) image.getLayoutParams();

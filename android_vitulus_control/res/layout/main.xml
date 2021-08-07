@@ -297,8 +297,8 @@
         android:background="@drawable/toggle_btn_background"
         android:text="ToggleButton"
         android:textColor="@color/onblue"
-        android:textOff="MOVER MOTOR"
-        android:textOn="MOVER MOTOR"
+        android:textOff="MOWER "
+        android:textOn="MOWER"
         android:textSize="12sp" />
 
     <ToggleButton
