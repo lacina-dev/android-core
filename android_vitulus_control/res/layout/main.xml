@@ -29,13 +29,13 @@
 
     <org.ros.android.view.VirtualJoystickView
         android:id="@+id/virtual_joystick"
-        android:layout_width="241dp"
-        android:layout_height="241dp"
+        android:layout_width="200dp"
+        android:layout_height="200dp"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="22dp"
-        android:layout_marginRight="22dp">
+        android:layout_alignParentBottom="true"
+        android:layout_marginRight="40dp"
+        android:layout_marginBottom="60dp">
 
     </org.ros.android.view.VirtualJoystickView>
 
@@ -105,11 +105,11 @@
 
     <TextView
         android:id="@+id/textView2"
-        android:layout_width="105dp"
+        android:layout_width="110dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
-        android:layout_marginLeft="20dp"
+        android:layout_marginLeft="10dp"
         android:layout_marginTop="-8dp"
         android:fontFamily="sans-serif-black"
         android:text="Vitulus"
@@ -544,21 +544,20 @@
         android:id="@+id/seekBarCutHeight"
         android:layout_width="201dp"
         android:layout_height="46dp"
+        android:layout_below="@+id/currCutHeight"
         android:layout_alignLeft="@id/seekBarRpm"
         android:layout_alignEnd="@id/seekBarRpm"
-        android:layout_alignBottom="@+id/MowerPanel"
-        android:layout_marginEnd="-1dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginTop="17dp"
+        android:layout_marginEnd="0dp"
         android:scrollbarTrackHorizontal="@drawable/toggle_btn_text" />
 
     <SeekBar
         android:id="@+id/seekBarRpm"
         android:layout_width="205dp"
         android:layout_height="49dp"
-        android:layout_above="@+id/seekBarCutHeight"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="47dp"
-        android:layout_marginBottom="29dp" />
+        android:layout_below="@+id/currRpm"
+        android:layout_alignLeft="@id/currRpm"
+        android:layout_marginTop="17dp" />
 
     <TextView
         android:id="@+id/currRpm"
@@ -566,8 +565,8 @@
         android:layout_height="wrap_content"
         android:layout_alignTop="@+id/MowerPanel"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="47dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="38dp"
+        android:layout_marginTop="28dp"
         android:text="Current RPM: "
         android:textColor="@color/offgrey"
         android:visibility="visible" />
@@ -576,34 +575,29 @@
         android:id="@+id/currCutHeight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/currRpm"
+        android:layout_below="@+id/seekBarRpm"
         android:layout_alignLeft="@id/currRpm"
-        android:layout_alignEnd="@id/currRpm"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="47dp"
-        android:layout_marginTop="18dp"
+        android:layout_alignParentStart="false"
+        android:layout_marginStart="0dp"
+        android:layout_marginTop="20dp"
         android:text="Current cut height: "
         android:textColor="@color/offgrey" />
 
     <org.ros.android.view.RosTextView
         android:id="@+id/rosTextViewCurrRpm"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/textViewSetCutHeight"
         android:layout_alignBottom="@id/currRpm"
-        android:layout_marginStart="22dp"
-        android:layout_marginBottom="0dp"
-        android:layout_toEndOf="@+id/currRpm"
         android:text="0"
         android:textColor="@color/offgrey" />
 
     <org.ros.android.view.RosTextView
         android:id="@+id/rosTextViewCutHeight"
-        android:layout_width="120dp"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/textViewSetCutHeight"
         android:layout_alignBottom="@id/currCutHeight"
-        android:layout_marginStart="22dp"
-        android:layout_marginBottom="0dp"
-        android:layout_toEndOf="@+id/currRpm"
         android:text="0"
         android:textColor="@color/offgrey" />
 
@@ -611,10 +605,9 @@
         android:id="@+id/textViewSetRpm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignEnd="@id/textViewSetCutHeight"
         android:layout_alignBottom="@id/seekBarRpm"
-        android:layout_marginStart="32dp"
         android:layout_marginBottom="14dp"
-        android:layout_toEndOf="@+id/seekBarRpm"
         android:text="0"
         android:textColor="@color/offgrey" />
 

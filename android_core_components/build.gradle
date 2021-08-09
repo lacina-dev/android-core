@@ -27,7 +27,7 @@ dependencies {
 apply plugin: "com.android.library"
 
 android {
-  compileSdkVersion 28
+  compileSdkVersion 31
 
   defaultConfig {
     minSdkVersion 16
@@ -35,4 +35,5 @@ android {
     versionCode 1
     versionName "1.0"
   }
+  buildToolsVersion '30.0.1'
 }
