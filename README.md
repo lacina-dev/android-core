@@ -7,10 +7,10 @@ For details visit [my blog](https://lacina.dev/blog/how-install-android-studio-a
 
 
 camera view <br>
-![](https://gitlab.lacina.dev/vitulus/android_core/-/raw/master/img/android_vitulus_control_cam.png)
+![](https://lacina.dev/media/images/android_vitulus_control_cam.max-1080x1080.png)
 
 
 
 map view <br>
-![](https://gitlab.lacina.dev/vitulus/android_core/-/raw/master/img/android_vitulus_control_map.png)
+![](https://lacina.dev/media/images/android_vitulus_control_map.max-1080x1080.png)
 
